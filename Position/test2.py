@@ -1,3 +1,5 @@
+# run this file to measure how long time test1.py takes
+
 import test1
 import datetime
 
