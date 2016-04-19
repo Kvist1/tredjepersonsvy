@@ -10,9 +10,10 @@ if __name__ == '__main__':
     # service.py executed as script
     # do something
     # service_func()
-    start = datetime.datetime.now()  #starta klocka
-    test1.start_eko()
-    stop = datetime.datetime.now()  #starta klocka
-    timeout = stop - start #skillnad klockslag
-    print "Timeout tid:",timeout.total_seconds()
+    while True:
+      start = datetime.datetime.now()  #starta klocka
+      test1.start_eko()
+      stop = datetime.datetime.now()  #starta klocka
+      timeout = stop - start #skillnad klockslag
+      print "Programtid:",timeout.total_seconds(),"\n"
 
