@@ -2,30 +2,46 @@ import socket
 import re
 
 def testMethod(data):
-	print "String: " + data
+	print "Data is: " + data
 
-def terminate():
+def shutDownServer():
 	sys.exit(0)
 
+def error(text):
+	print "Something went wrong, " + text	
 
-def checkData(data):
-	if 'test' in data:
+# Takes a string were the first value is the command and the second value should contain data.
+def doCommand(text):
+	try:
+		command = text.split()[0]
+	except ValueError:
+		return
+		
+	if command == "test":
+		try:
+			data = text.split()[1]
+		except ValueError:
+			error("Value Error in text.split()[1]")
+			return text
+		except IndexError:
+			return "Message didn't contain any data"	
 		testMethod(data)
-	if data == 'quit':
-		terminate()
-
+	elif command == 'shutdown':
+		shutDownServer()
+	else:
+		error("could not find command") 
+	return (text + " Complete!")
 
 def Main():
 	host = '127.0.0.1'
 	port = 5001
-	randomNumber = 12
 
 	print "Server is running..."
 
 	s = socket.socket()
 	s.bind((host, port))
 
-	s.listen(1) # the number is how many connection to listne to
+	s.listen(1) # the number is how many connection to listen to
 	c, addr = s.accept() # c = current connection
 	print"Connection from: "  + str(addr)
 
@@ -33,10 +49,8 @@ def Main():
 		data = c.recv(1024).decode() #max buffer data 1024
 		if not data:
 			break # ends connections if no data
-#		print'from connected user: ' + str(data)
-		checkData(data);
-#		data = str(data).upper()
-#		print'sending: ' + str(data)
+
+		data = doCommand(data);
 		c.send(data.encode())
 	c.close()
 
