@@ -19,7 +19,7 @@ def init_sensors():
   GPIO.setup(TRIG,GPIO.OUT)
   GPIO.setup(ECHO,GPIO.IN)
 
-def start_eko():
+def start_listening():
   init_sensors()
 
   try:
@@ -27,21 +27,21 @@ def start_eko():
     pulse_end = -1
 
     GPIO.output(TRIG, False)
-    print "Waiting For Sensor To Settle"
-    time.sleep(2)
+    time.sleep(0.5) # kan behövas testas olika värden här
 
-    start = datetime.datetime.now()  #starta klocka
     GPIO.output(TRIG, True)
     time.sleep(0.00001)
     GPIO.output(TRIG, False)
 
     print "Wait for pulse"
     while GPIO.input(ECHO)==0:
-      pulse_start = time.time()
+      pulse_start = time.time() # kommentera bort efter testning
+      pass
 
     while GPIO.input(ECHO)==1:
-      pulse_end = time.time()
-      stop = datetime.datetime.now() #stoppa klocka
+      time_sensor_L = datetime.datetime.now() #stoppa klocka
+      pulse_end = time.time() # kommentera bort efter testning
+
 
     pulse_duration = pulse_end - pulse_start
 
@@ -51,8 +51,7 @@ def start_eko():
 
     print "Distance:",distance,"cm"
 
-    timeout = stop - start #skillnad klockslag
-    print "Timeout tid:",timeout.total_seconds()
+    print "Sensor got hit at: ",time_sensor_L
 
   finally:
     GPIO.cleanup()

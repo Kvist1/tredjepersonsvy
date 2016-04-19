@@ -10,6 +10,9 @@ def shutDownServer():
 def error(text):
 	print "Something went wrong, " + text	
 
+def startEko():
+	print "starting eko or not... testing hihi.."
+
 # Takes a string were the first value is the command and the second value should contain data.
 def doCommand(text):
 	try:
@@ -28,6 +31,9 @@ def doCommand(text):
 		testMethod(data)
 	elif command == 'shutdown':
 		shutDownServer()
+	elif command == 'startEko':
+		startEko()
+		return "sending_pulse"
 	else:
 		error("could not find command") 
 	return (text + " Complete!")
