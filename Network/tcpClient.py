@@ -3,7 +3,6 @@ import trilateration_sensors_v1
 
 def Main():
 	print 'Client is running...'
-#	host = "127.0.0.1"
 	host = '192.168.42.1'
 	port = 5001
 

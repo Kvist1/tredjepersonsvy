@@ -39,7 +39,7 @@ def doCommand(text):
 	return (text + " Complete!")
 
 def Main():
-	host = '127.0.0.1'
+	host = '192.168.42.1'
 	port = 5001
 
 	print "Server is running..."
