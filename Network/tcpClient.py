@@ -1,5 +1,5 @@
 import socket
-import trilateration_sensors_v1
+import trilateration_sensors_v2
 
 def Main():
 	print 'Client is running...'
@@ -18,7 +18,7 @@ def Main():
 		print'Recieved from server: ' + str(data)
 
 		if data == "sending_pulse"
-			trilateration_sensors_v1.start_listening()
+			trilateration_sensors_v2.start_listening()
 
 		message = "startEko"
 	s.close()

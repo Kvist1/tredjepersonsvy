@@ -1,5 +1,10 @@
 import socket
 import re
+import range_sensor_drone_v1
+
+
+angle_compass_latest = 0
+angle_something_latest = 0
 
 def testMethod(data):
 	print "Data is: " + data
@@ -11,7 +16,12 @@ def error(text):
 	print "Something went wrong, " + text	
 
 def startEko():
-	print "starting eko or not... testing hihi.."
+	print "starting eko "
+	# start one pulse
+	range_sensor_drone_v1.start_eko()
+
+def getAngleDiff(angle_compass, angle_something):
+	print "return angles"
 
 # Takes a string were the first value is the command and the second value should contain data.
 def doCommand(text):
@@ -56,8 +66,8 @@ def Main():
 		if not data:
 			break # ends connections if no data
 
-		data = doCommand(data);
-		c.send(data.encode())
+		message = doCommand(data);
+		c.send(message.encode())
 	c.close()
 
 if __name__ == '__main__':
