@@ -30,6 +30,11 @@ time_sensor_U = -1
 
 time_sensor_F = -1
 
+#------------ Time diffs ---------------#
+
+ta = -1
+tb = -1
+
 #------------ Sensor activation status ---------------#
 sensor_L_listening = True
 sensor_R_listening = True
@@ -44,10 +49,14 @@ def reset_sensor_statuses():
   sensor_F_listening = False
 
 def get_timediffs():
-  return calculate_timediffs()
+  return "" + ta + " " + tb
 
 # convertion to matlab files variables F=t1, R=t2, U=t3, L=t4
 def calculate_timediffs():
+  print "calculate time diffs"
+  global ta
+  global tb
+
   if time_sensor_F < time_sensor_R and time_sensor_F < time_sensor_U and time_sensor_F < time_sensor_L:
     if time_sensor_L < time_sensor_R and time_sensor_L < time_sensor_U:
       ta = time_sensor_L - time_sensor_R
@@ -93,10 +102,7 @@ def calculate_timediffs():
       tb = time_sensor_R - time_sensor_U
   else:
     print "timestamps error in calculate_timediffs"
-
-  return "timediffs " + ta + " " + tb
-  
-  
+    
 
 def get_angles():
   return str(angle_compass) + " " + str(angle_something)
@@ -104,6 +110,8 @@ def get_angles():
 def calculate_angles():
   global angle_compass
   global angle_something
+  global ta
+  global tb
   # look in the matlab matrix in a .mat file for the angles corresponding 
   # to the given the 'ta' and 'tb' timediffs. 
 
@@ -141,23 +149,27 @@ def start_listening():
       if GPIO.input(ECHO_L)==0 and sensor_L_listening:
         time_sensor_L = datetime.datetime.now()
         sensor_L_listening = False
+        print "L sensor recieved sound"
 
       if GPIO.input(ECHO_R)==0 and sensor_R_listening:
         time_sensor_R = datetime.datetime.now()
         sensor_R_listening = False
+        print "R sensor recieved sound"
 
       if GPIO.input(ECHO_U)==0 and sensor_U_listening:
         time_sensor_U = datetime.datetime.now()
         sensor_U_listening = False
+        print "U sensor recieved sound"
 
       if GPIO.input(ECHO_F)==0 and sensor_F_listening:
         time_sensor_F = datetime.datetime.now()
         sensor_F_listening = False
+        print "F sensor recieved sound"
 
       # if all sensor is on status false, then all have recieved an ultasonic sound
       if sensor_L_listening == False and sensor_R_listening == False \
       and sensor_U_listening == False and sensor_F_listening == False:
-        return get_timediffs()
+        calculate_timediffs()
 
   except KeyboardInterrupt:  
     # here you put any code you want to run before the program   
