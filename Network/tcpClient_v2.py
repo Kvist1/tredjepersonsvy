@@ -45,11 +45,11 @@ def Main():
     sCommand = s.recv(1024).decode()
     print "Recieved from server: " + str(sCommand)
 
-    if sCommand == "sending_pulse":
-      sCommand = trilateration_sensors_v3.start_listening()
-    if sCommand == "timediffs":
-      pass
-    messageToSend = "startEko"
+    time_data = trilateration_sensors_v3.get_timediffs()
+    messageToSend = "timediffs " + time_data
+
+    # TODO: fixa denna kommunikation... inte klart hur
+    # alla senaste pushade program ska kommunicera...
   s.close()
 
 if __name__ == '__main__':
