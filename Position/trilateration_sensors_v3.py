@@ -53,12 +53,47 @@ def get_timediffs():
     print "Timestamp R",time_sensor_R
     print "Timestamp U",time_sensor_U
     print "Timestamp F",time_sensor_F
-    return "timediffs",get_timediffs()
-    #return str(time_sensor_L)
+    return calculate_timediffs()
   else:
     # all sensors have not received a signal, start new eko from server (drone)
     reset_sensor_statuses()
     return "startEko"
+
+def calculate_timediffs():
+  if time_sensor_F < time_sensor_R and time_sensor_F < time_sensor_U and time_sensor_F < time_sensor_L:
+    if time_sensor_L < time_sensor_R and time_sensor_L < time_sensor_U:
+      # t2-t3 och t2-t4
+    elif time_sensor_R < time_sensor_L and time_sensor_R < time_sensor_U:
+      # t2-t3 och t2-t4
+    elif time_sensor_U < time_sensor_R and time_sensor_U < time_sensor_L:
+      # t2-t3 och t2-t4
+
+  elif time_sensor_R < time_sensor_L and time_sensor_R < time_sensor_U and time_sensor_R < time_sensor_F:
+    if time_sensor_U < time_sensor_L and time_sensor_U < time_sensor_F:
+      # t2-t3 och t2-t4
+    elif time_sensor_L < time_sensor_U and time_sensor_L < time_sensor_F:
+      # t2-t3 och t2-t4
+    elif time_sensor_F < time_sensor_U and time_sensor_F < time_sensor_L:
+      # t2-t3 och t2-t4
+
+  elif time_sensor_U < time_sensor_R and time_sensor_U < time_sensor_L and time_sensor_U < time_sensor_F:
+    if time_sensor_F < time_sensor_R and time_sensor_F < time_sensor_L:
+      # t2-t3 och t2-t4
+    elif time_sensor_L < time_sensor_R and time_sensor_L < time_sensor_F:
+      # t2-t3 och t2-t4
+    elif time_sensor_R < time_sensor_L and time_sensor_R < time_sensor_F:
+      # t2-t3 och t2-t4
+
+  elif time_sensor_L < time_sensor_R and time_sensor_L < time_sensor_U and time_sensor_L < time_sensor_F:
+    if time_sensor_F < time_sensor_R and time_sensor_F < time_sensor_L:
+      # t2-t3 och t2-t4
+    elif time_sensor_U < time_sensor_R and time_sensor_U < time_sensor_F:
+      # t2-t3 och t2-t4
+    elif time_sensor_R < time_sensor_L and time_sensor_R < time_sensor_F:
+      # t2-t3 och t2-t4
+  
+  else:
+    print "timestamps error in calculate_timediffs()"
 
 def get_angles():
   return str(angle_compass) + " " + str(angle_something)
