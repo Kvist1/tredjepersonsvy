@@ -44,56 +44,59 @@ def reset_sensor_statuses():
   sensor_F_listening = False
 
 def get_timediffs():
-  print "return timestamps"
+  return calculate_timediffs()
 
-  # if all sensor is on status false, then all have recieved an ultasonic sound
-  if sensor_L_listening == False and sensor_R_listening == False \
-  and sensor_U_listening == False and sensor_F_listening == False:
-    print "Timestamp L",time_sensor_L
-    print "Timestamp R",time_sensor_R
-    print "Timestamp U",time_sensor_U
-    print "Timestamp F",time_sensor_F
-    return calculate_timediffs()
-  else:
-    # all sensors have not received a signal, start new eko from server (drone)
-    reset_sensor_statuses()
-    return "startEko"
-
+# convertion to matlab files variables F=t1, R=t2, U=t3, L=t4
 def calculate_timediffs():
   if time_sensor_F < time_sensor_R and time_sensor_F < time_sensor_U and time_sensor_F < time_sensor_L:
     if time_sensor_L < time_sensor_R and time_sensor_L < time_sensor_U:
-      # t2-t3 och t2-t4
+      ta = time_sensor_L - time_sensor_R
+      tb = time_sensor_L - time_sensor_U
     elif time_sensor_R < time_sensor_L and time_sensor_R < time_sensor_U:
-      # t2-t3 och t2-t4
+      ta = time_sensor_R - time_sensor_U
+      tb = time_sensor_R - time_sensor_L
     elif time_sensor_U < time_sensor_R and time_sensor_U < time_sensor_L:
-      # t2-t3 och t2-t4
+      ta = time_sensor_U - time_sensor_R
+      tb = time_sensor_U - time_sensor_L
 
   elif time_sensor_R < time_sensor_L and time_sensor_R < time_sensor_U and time_sensor_R < time_sensor_F:
     if time_sensor_U < time_sensor_L and time_sensor_U < time_sensor_F:
-      # t2-t3 och t2-t4
+      ta = time_sensor_U - time_sensor_F
+      tb = time_sensor_U - time_sensor_L
     elif time_sensor_L < time_sensor_U and time_sensor_L < time_sensor_F:
-      # t2-t3 och t2-t4
+      ta = time_sensor_L - time_sensor_F
+      tb = time_sensor_L - time_sensor_U
     elif time_sensor_F < time_sensor_U and time_sensor_F < time_sensor_L:
-      # t2-t3 och t2-t4
+      ta = time_sensor_F - time_sensor_U
+      tb = time_sensor_F - time_sensor_L
 
   elif time_sensor_U < time_sensor_R and time_sensor_U < time_sensor_L and time_sensor_U < time_sensor_F:
     if time_sensor_F < time_sensor_R and time_sensor_F < time_sensor_L:
-      # t2-t3 och t2-t4
+      ta = time_sensor_F - time_sensor_R
+      tb = time_sensor_F - time_sensor_L
     elif time_sensor_L < time_sensor_R and time_sensor_L < time_sensor_F:
-      # t2-t3 och t2-t4
+      ta = time_sensor_L - time_sensor_F
+      tb = time_sensor_L - time_sensor_R
     elif time_sensor_R < time_sensor_L and time_sensor_R < time_sensor_F:
-      # t2-t3 och t2-t4
+      ta = time_sensor_R - time_sensor_F
+      tb = time_sensor_R - time_sensor_L
 
   elif time_sensor_L < time_sensor_R and time_sensor_L < time_sensor_U and time_sensor_L < time_sensor_F:
-    if time_sensor_F < time_sensor_R and time_sensor_F < time_sensor_L:
-      # t2-t3 och t2-t4
+    if time_sensor_F < time_sensor_R and time_sensor_F < time_sensor_U:
+      ta = time_sensor_F - time_sensor_R
+      tb = time_sensor_F - time_sensor_U
     elif time_sensor_U < time_sensor_R and time_sensor_U < time_sensor_F:
-      # t2-t3 och t2-t4
-    elif time_sensor_R < time_sensor_L and time_sensor_R < time_sensor_F:
-      # t2-t3 och t2-t4
-  
+      ta = time_sensor_U - time_sensor_F
+      tb = time_sensor_U - time_sensor_R
+    elif time_sensor_R < time_sensor_U and time_sensor_R < time_sensor_F:
+      ta = time_sensor_R - time_sensor_F
+      tb = time_sensor_R - time_sensor_U
   else:
-    print "timestamps error in calculate_timediffs()"
+    print "timestamps error in calculate_timediffs"
+
+  return "timediffs " + ta + " " + tb
+  
+  
 
 def get_angles():
   return str(angle_compass) + " " + str(angle_something)
@@ -102,7 +105,7 @@ def calculate_angles():
   global angle_compass
   global angle_something
   # look in the matlab matrix in a .mat file for the angles corresponding 
-  # to the given 4 different timestamps. 
+  # to the given the 'ta' and 'tb' timediffs. 
 
   # angle_compass = ?
   # angle_something = ?
@@ -133,7 +136,7 @@ def start_listening():
 
       # TODO: if it loops to many times, send a new 
       # message about pulse to the client who passes 
-      # it to the server
+      # it to the server. Maybe a counter and "if counter to high - send new pulse"
 
       if GPIO.input(ECHO_L)==0 and sensor_L_listening:
         time_sensor_L = datetime.datetime.now()
@@ -151,6 +154,10 @@ def start_listening():
         time_sensor_F = datetime.datetime.now()
         sensor_F_listening = False
 
+      # if all sensor is on status false, then all have recieved an ultasonic sound
+      if sensor_L_listening == False and sensor_R_listening == False \
+      and sensor_U_listening == False and sensor_F_listening == False:
+        return get_timediffs()
 
   except KeyboardInterrupt:  
     # here you put any code you want to run before the program   

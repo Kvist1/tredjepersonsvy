@@ -1,25 +1,10 @@
 import socket
 import re
 import range_sensor_drone_v3
-import threading
 
 
 angle_compass_latest = 0
 angle_something_latest = 0
-
-ekoThread = 0
-
-class myThread (threading.Thread):
-    def __init__(self, threadID, name):
-        threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
-    def run(self):
-        print "Starting " + self.name
-        range_sensor_drone_v3.start_eko()
-        print "Exiting " + self.name
-
-
 
 def testMethod(data):
   print "Data is: " + data
@@ -31,14 +16,10 @@ def error(text):
   print "Something went wrong, " + text 
 
 def startEko():
-  global ekoThread
-  print "starting eko "
-  # start one pulse in a thread
   try:
-    ekoThread = myThread(1, "EkoThread")
-    ekoThread.start()
+    range_sensor_drone_v3.start_eko()
   except:
-    print "Error: unable to start thread"
+    print "Error: unable to start eko"
 
 def getAngleDiff(angle_compass, angle_something):
   print "return angles"
@@ -70,9 +51,7 @@ def doCommand(text):
   return (text + " Complete!")
 
 def Main():
-  global ekoThread
   host = '192.168.42.1'
-  # host = '127.0.0.1' # use if testing locally
   port = 5001
 
   print "Server is running..."
@@ -91,7 +70,6 @@ def Main():
 
     messageToSend = doCommand(cData);
     c.send(messageToSend.encode())
-    ekoThread.join()
   c.close()
 
 if __name__ == '__main__':
