@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 import datetime
+import tcpClient_v2
 
 #------------ Abbreviated words ---------------#
 # L = Left
@@ -48,8 +49,8 @@ def reset_sensor_statuses():
   sensor_U_listening = False
   sensor_F_listening = False
 
-def get_timediffs():
-  return "" + ta + " " + tb
+def set_client_timediffs():
+  tcpClient_v2.set_timediffs(ta + " " + tb) #TODO, ersätt med att lägga på en kö?
 
 # convertion to matlab files variables F=t1, R=t2, U=t3, L=t4
 def calculate_timediffs():
@@ -57,51 +58,53 @@ def calculate_timediffs():
   global ta
   global tb
 
-  if time_sensor_F < time_sensor_R and time_sensor_F < time_sensor_U and time_sensor_F < time_sensor_L:
-    if time_sensor_L < time_sensor_R and time_sensor_L < time_sensor_U:
+  if time_sensor_F > time_sensor_R and time_sensor_F > time_sensor_U and time_sensor_F > time_sensor_L:
+    if time_sensor_L > time_sensor_R and time_sensor_L > time_sensor_U:
       ta = time_sensor_L - time_sensor_R
       tb = time_sensor_L - time_sensor_U
-    elif time_sensor_R < time_sensor_L and time_sensor_R < time_sensor_U:
+    elif time_sensor_R > time_sensor_L and time_sensor_R > time_sensor_U:
       ta = time_sensor_R - time_sensor_U
       tb = time_sensor_R - time_sensor_L
-    elif time_sensor_U < time_sensor_R and time_sensor_U < time_sensor_L:
+    elif time_sensor_U > time_sensor_R and time_sensor_U > time_sensor_L:
       ta = time_sensor_U - time_sensor_R
       tb = time_sensor_U - time_sensor_L
 
-  elif time_sensor_R < time_sensor_L and time_sensor_R < time_sensor_U and time_sensor_R < time_sensor_F:
-    if time_sensor_U < time_sensor_L and time_sensor_U < time_sensor_F:
+  elif time_sensor_R > time_sensor_L and time_sensor_R > time_sensor_U and time_sensor_R > time_sensor_F:
+    if time_sensor_U > time_sensor_L and time_sensor_U > time_sensor_F:
       ta = time_sensor_U - time_sensor_F
       tb = time_sensor_U - time_sensor_L
-    elif time_sensor_L < time_sensor_U and time_sensor_L < time_sensor_F:
+    elif time_sensor_L > time_sensor_U and time_sensor_L > time_sensor_F:
       ta = time_sensor_L - time_sensor_F
       tb = time_sensor_L - time_sensor_U
-    elif time_sensor_F < time_sensor_U and time_sensor_F < time_sensor_L:
+    elif time_sensor_F > time_sensor_U and time_sensor_F > time_sensor_L:
       ta = time_sensor_F - time_sensor_U
       tb = time_sensor_F - time_sensor_L
 
-  elif time_sensor_U < time_sensor_R and time_sensor_U < time_sensor_L and time_sensor_U < time_sensor_F:
-    if time_sensor_F < time_sensor_R and time_sensor_F < time_sensor_L:
+  elif time_sensor_U > time_sensor_R and time_sensor_U > time_sensor_L and time_sensor_U > time_sensor_F:
+    if time_sensor_F > time_sensor_R and time_sensor_F > time_sensor_L:
       ta = time_sensor_F - time_sensor_R
       tb = time_sensor_F - time_sensor_L
-    elif time_sensor_L < time_sensor_R and time_sensor_L < time_sensor_F:
+    elif time_sensor_L > time_sensor_R and time_sensor_L > time_sensor_F:
       ta = time_sensor_L - time_sensor_F
       tb = time_sensor_L - time_sensor_R
-    elif time_sensor_R < time_sensor_L and time_sensor_R < time_sensor_F:
+    elif time_sensor_R > time_sensor_L and time_sensor_R > time_sensor_F:
       ta = time_sensor_R - time_sensor_F
       tb = time_sensor_R - time_sensor_L
 
-  elif time_sensor_L < time_sensor_R and time_sensor_L < time_sensor_U and time_sensor_L < time_sensor_F:
-    if time_sensor_F < time_sensor_R and time_sensor_F < time_sensor_U:
+  elif time_sensor_L > time_sensor_R and time_sensor_L > time_sensor_U and time_sensor_L > time_sensor_F:
+    if time_sensor_F > time_sensor_R and time_sensor_F > time_sensor_U:
       ta = time_sensor_F - time_sensor_R
       tb = time_sensor_F - time_sensor_U
-    elif time_sensor_U < time_sensor_R and time_sensor_U < time_sensor_F:
+    elif time_sensor_U > time_sensor_R and time_sensor_U > time_sensor_F:
       ta = time_sensor_U - time_sensor_F
       tb = time_sensor_U - time_sensor_R
-    elif time_sensor_R < time_sensor_U and time_sensor_R < time_sensor_F:
+    elif time_sensor_R > time_sensor_U and time_sensor_R > time_sensor_F:
       ta = time_sensor_R - time_sensor_F
       tb = time_sensor_R - time_sensor_U
   else:
     print "timestamps error in calculate_timediffs"
+
+  # set_client_timediffs() #TODO: Uncomment when client communication is working
     
 
 def get_angles():

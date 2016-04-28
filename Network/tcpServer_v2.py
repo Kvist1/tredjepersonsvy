@@ -69,7 +69,6 @@ def doCommand(text):
   return (text + " Complete!")
 
 def Main():
-  global ekoThread
   host = '192.168.42.1'
   port = 5001
 

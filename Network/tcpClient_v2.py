@@ -5,6 +5,13 @@ import threading
 
 ekoThread = 0
 
+#------------ Time diffs ---------------#
+# gets uptaded from trilateration_sensors_v3
+ta = -1
+tb = -1
+newTime = False # will be set to true if new diff received
+
+
 class myThread (threading.Thread):
     def __init__(self, threadID, name):
         threading.Thread.__init__(self)
